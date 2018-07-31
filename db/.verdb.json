@@ -1,0 +1,17 @@
+{
+  "pointer": "",
+  "database": {
+    "host": "ec2-23-23-220-19.compute-1.amazonaws.com",
+    "name": "dauoas7pniq3p5",
+    "user": "dauoas7pniq3p5"
+  },
+  "control_file": "order.txt",
+  "up": "up.sql",
+  "down": "down.sql",
+  "sets": {
+    "global_seq": {
+      "up": "cba93d296961f61e0a3af44eafd26ae9",
+      "down": "42ab9cb775f12636f7718d160514ca69"
+    }
+  }
+}

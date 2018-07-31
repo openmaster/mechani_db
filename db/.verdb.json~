@@ -1,0 +1,11 @@
+{
+  "pointer": null,
+  "database": {
+    "host": "localhost",
+    "name": "dauoas7pniq3p5",
+    "user": "dauoas7pniq3p5"
+  },
+  "control_file": "order.txt",
+  "up": "up.sql",
+  "down": "down.sql"
+}
