@@ -1,5 +1,3 @@
-ALTER TABLE core.users ADD COLUMN role_type BIGINT;
-
 CREATE TABLE core.user_roles (
   id         BIGINT NOT NULL DEFAULT sp.global_seq_val('core.user_roles'),
   external_id TEXT NOT NULL,
