@@ -1,3 +1,5 @@
 global_seq
 user_roles
 clients_sites_users
+login_user
+jobs
