@@ -70,7 +70,7 @@ BEGIN
       city       = _city,
       state      = _state,
       zip        = _zip,
-      update     = current_timestamp
+      updated     = current_timestamp
         WHERE id = _id;
       RETURN 'updated';
     ELSE
