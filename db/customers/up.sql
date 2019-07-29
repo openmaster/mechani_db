@@ -1,13 +1,13 @@
 CREATE SCHEMA loyalty;
 CREATE TABLE loyalty.customers (
   id           BIGINT NOT NULL DEFAULT sp.global_seq_val('loyalty.customers'),
+  external_id  BIGINT NOT NULL,
   client_id    BIGINT NOT NULL REFERENCES core.clients(id),
   site_id      BIGINT NOT NULL REFERENCES core.sites(id),
   first_name   TEXT NOT NULL,
   last_name    TEXT,
-  phone        INTEGER,
+  phone        TEXT,
   email        TEXT,
-  self_owned   BOOLEAN NOT NULL DEFAULT 'f',
   address1     TEXT,
   address2     TEXT,
   city         TEXT,
@@ -17,21 +17,22 @@ CREATE TABLE loyalty.customers (
   updated      TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (id)
 );
- ALTER TABLE loyalty.customers ADD CONSTRAINT client_site_first_name UNIQUE(client_id, site_id, first_name);
+ ALTER TABLE loyalty.customers ADD CONSTRAINT client_site_first_name UNIQUE(client_id, site_id, external_id);
 
  CREATE FUNCTION sp.customers(
    _id            BIGINT,
+   _external_id   BIGINT,
    _client_id     BIGINT,
    _site_id       BIGINT,
    _first_name    TEXT,
    _last_name     TEXT,
-   _phone          INTEGER,
-   _email          TEXT,
-   _address1       TEXT,
-   _address2       TEXT,
-   _city           TEXT,
-   _state          TEXT,
-   _zip            TEXT
+   _phone         TEXT,
+   _email         TEXT,
+   _address1      TEXT,
+   _address2      TEXT,
+   _city          TEXT,
+   _state         TEXT,
+   _zip           TEXT
  ) RETURNS TEXT AS $$
  DECLARE
   _row RECORD;
@@ -40,6 +41,7 @@ BEGIN
   SELECT INTO _row * FROM loyalty.customers WHERE id = _id;
   IF FOUND THEN
     IF ROW(
+      _row.external_id,
       _row.first_name,
       _row.last_name,
       _row.phone,
@@ -50,6 +52,7 @@ BEGIN
       _row.state,
       _row.zip
     ) IS DISTINCT FROM (
+      _external_id,
       _first_name,
       _last_name,
       _phone,
@@ -61,6 +64,7 @@ BEGIN
       _zip
     ) THEN
       UPDATE loyalty.customers SET
+      external_id = _external_id,
       first_name = _first_name,
       last_name  = _last_name,
       phone      = _phone,
@@ -78,6 +82,7 @@ BEGIN
     END IF;
   ELSE
     INSERT INTO loyalty.customers (
+      external_id,
       client_id,
       site_id,
       first_name,
@@ -90,6 +95,7 @@ BEGIN
       state,
       zip
     ) VALUES (
+      _external_id,
       _client_id,
       _site_id,
       _first_name,
