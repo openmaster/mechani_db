@@ -55,7 +55,7 @@ BEGIN
       RETURN 'unchanged';
     END IF;
   ELSE
-    INSERT INTO loyalty.customers (
+    INSERT INTO pb.parts (
       external_id,
       client_id,
       site_id,
