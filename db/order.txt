@@ -6,3 +6,6 @@ jobs
 mechanics
 express_sessions
 customers
+departments
+parts
+fix_jobs_11
