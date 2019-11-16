@@ -1,0 +1,1 @@
+DROP FUNCTION sp.login_jwt(_user_name TEXT, _password TEXT);
