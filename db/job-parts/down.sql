@@ -1,5 +1,4 @@
 DROP FUNCTION sp.job_parts(
-   _id                    BIGINT,
    _client_id             BIGINT,
    _site_id               BIGINT,
    _job_id                BIGINT,
