@@ -7,6 +7,9 @@ CREATE TABLE pb.parts (
   name                TEXT NOT NULL,
   description         TEXT,
   bar_code            TEXT,
+  qoh                 SMALLINT NOT NULL DEFAULT 0,
+  cost_price          NUMERIC(10,2) NOT NULL DEFAULT 0,
+  sale_price          NUMERIC(10,2) NOT NULL DEFAULT 0,
   created             TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updated             TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (id)
@@ -21,7 +24,10 @@ CREATE TABLE pb.parts (
    _department_id         BIGINT,
    _name                  TEXT,
    _description           TEXT,
-   _bar_code              TEXT
+   _bar_code              TEXT,
+   _qoh                 SMALLINT,
+   _cost_price          NUMERIC(10,2),
+   _sale_price          NUMERIC(10,2)
  ) RETURNS TEXT AS $$
  DECLARE
   _row RECORD;
@@ -34,13 +40,19 @@ BEGIN
       _row.department_id,
       _row.name,
       _row.description,
-      _row.bar_code
+      _row.bar_code,
+      _row.qoh,
+      _row.cost_price,
+      _row.sale_price
     ) IS DISTINCT FROM (
       _external_id,
       _department_id,
       _name,
       _description,
-      _bar_code
+      _bar_code,
+      _qoh,
+      _row.cost_price,
+      _row.sale_price
     ) THEN
       UPDATE pb.parts SET
       external_id     =   _external_id,
@@ -48,6 +60,9 @@ BEGIN
       name            =   _name,
       description     =   _description,
       bar_code        =   _bar_code,
+      qoh             =   _qoh,
+      cost_price      =   _cost_price,
+      sale_price      =   _sale_price,
       updated         =   current_timestamp
         WHERE id = _id;
       RETURN 'updated';
@@ -62,7 +77,10 @@ BEGIN
       department_id,
       name,
       description,
-      bar_code
+      bar_code,
+      qoh,
+      cost_price,
+      sale_price
     ) VALUES (
       _external_id,
       _client_id,
@@ -70,7 +88,10 @@ BEGIN
       _department_id,
       _name,
       _description,
-      _bar_code
+      _bar_code,
+      _qoh,
+      _cost_price,
+      _sale_price
     ) RETURNING id INTO _new_id;
     RETURN _new_id::TEXT;
   END IF;

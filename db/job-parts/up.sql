@@ -4,6 +4,8 @@ CREATE TABLE core.job_parts (
   job_id              BIGINT NOT NULL REFERENCES core.jobs(id),
   part_id             BIGINT NOT NULL REFERENCES pb.parts(id),
   quantity            SMALLINT NOT NULL,
+  sale_price          NUMERIC(10,2),
+  cost_price          NUMERIC(10,2),
   created             TIMESTAMP NOT NULL DEFAULT current_timestamp,
   updated             TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (client_id, site_id, job_id, part_id)
@@ -15,7 +17,9 @@ CREATE TABLE core.job_parts (
    _site_id               BIGINT,
    _job_id                BIGINT,
    _part_id               BIGINT,
-   _quantity              SMALLINT
+   _quantity              SMALLINT,
+   _sale_price            NUMERIC(10,2),
+   _cost_price            NUMERIC(10,2)
  ) RETURNS TEXT AS $$
  DECLARE
   _row RECORD;
@@ -25,14 +29,21 @@ BEGIN
   IF FOUND THEN
     IF ROW(
       _row.part_id,
-      _row.quantity
+      _row.quantity,
+      _row.sale_price,
+      _row.cost_price
     ) IS DISTINCT FROM (
       _part_id,
-      _quantity
+      _quantity,
+      _sale_price,
+      _cost_price
     ) THEN
       UPDATE core.job_parts SET
       part_id    =   _part_id,
-      quantity   =   _quantity
+      quantity   =   _quantity,
+      sale_price =   _sale_price,
+      cost_price =   _sale_price
+
       WHERE client_id = _client_id and site_id = _site_id and job_id = _job_id and part_id = _part_id;
       RETURN 'updated';
     ELSE
@@ -44,15 +55,19 @@ BEGIN
       site_id,
       Job_id,
       part_id,
-      quantity
+      quantity,
+      sale_price,
+      cost_price
     ) VALUES (
       _client_id,
       _site_id,
       _job_id,
       _part_id,
-      _quantity
+      _quantity,
+      _sale_price,
+      _cost_price
     );
-    RETURN "added";
+    RETURN 'added';
   END IF;
 END;
 $$LANGUAGE plpgsql;
